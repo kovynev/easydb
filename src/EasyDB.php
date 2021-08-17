@@ -6,6 +6,7 @@ namespace ParagonIE\EasyDB;
 use \ParagonIE\EasyDB\Exception as Issues;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Connection\StatementWrapper;
+use Propel\Runtime\DataFetcher\PDODataFetcher;
 use \Throwable;
 
 /**
@@ -657,24 +658,24 @@ class EasyDB
         switch ($this->dbEngine) {
             case 'mysql':
                 $limiter = ' ORDER BY ' .
-                $this->escapeIdentifier($field) .
-                ' DESC LIMIT 0, 1 ';
+                    $this->escapeIdentifier($field) .
+                    ' DESC LIMIT 0, 1 ';
                 break;
             case 'pgsql':
                 $limiter = ' ORDER BY ' .
-                $this->escapeIdentifier($field) .
-                ' DESC OFFSET 0 LIMIT 1 ';
+                    $this->escapeIdentifier($field) .
+                    ' DESC OFFSET 0 LIMIT 1 ';
                 break;
             default:
                 $limiter = '';
         }
         $query = 'SELECT ' .
-                $this->escapeIdentifier($field) .
+            $this->escapeIdentifier($field) .
             ' FROM ' .
-                $this->escapeIdentifier($table) .
+            $this->escapeIdentifier($table) .
             ' WHERE ' .
-                $conditions .
-                $limiter;
+            $conditions .
+            $limiter;
         return $this->single($query, $params);
     }
 
@@ -695,9 +696,9 @@ class EasyDB
         if (count($maps) < 1) {
             throw new \InvalidArgumentException(
                 'Argument 2 passed to ' .
-                    static::class .
+                static::class .
                 '::' .
-                    __METHOD__ .
+                __METHOD__ .
                 '() must contain at least one field set!'
             );
         }
@@ -850,8 +851,8 @@ class EasyDB
         $columns = \array_map([$this, 'escapeIdentifier'], $columns);
 
         /**
-        * @var array<int, string>
-        */
+         * @var array<int, string>
+         */
         $duplicates_updates = [];
 
         if (is_array($duplicates_mode)) {
@@ -874,12 +875,12 @@ class EasyDB
             \implode(', ', $columns),
             \implode(', ', $placeholders),
             (
-                (count($duplicates_updates) > 0)
-                    ? (
-                        ' ON DUPLICATE KEY UPDATE ' .
-                        implode(', ', $duplicates_updates)
-                    )
-                    : ''
+            (count($duplicates_updates) > 0)
+                ? (
+                ' ON DUPLICATE KEY UPDATE ' .
+                implode(', ', $duplicates_updates)
+            )
+                : ''
             )
         );
 
@@ -986,6 +987,7 @@ class EasyDB
 
         if (empty($params)) {
             $stmt = $this->pdo->query($statement);
+
             if ($returnNumAffected) {
                 return (int) $stmt->rowCount();
             }
@@ -1300,12 +1302,12 @@ class EasyDB
     /**
      * Helper for PDOStatement::fetchAll() that always returns an array or object.
      *
-     * @param  \PDOStatement $stmt
+     * @param  PDODataFetcher $stmt
      * @param  int           $fetchStyle
      * @return array|object
      * @throws \TypeError
      */
-    protected function getResultsStrictTyped(\PDOStatement $stmt, int $fetchStyle = \PDO::FETCH_ASSOC)
+    protected function getResultsStrictTyped(PDODataFetcher $stmt, int $fetchStyle = \PDO::FETCH_ASSOC)
     {
         /**
          * @var array|object|bool $results
@@ -1346,7 +1348,7 @@ class EasyDB
      ****             PUNTER METHODS - see PDO class definition             ****
      ***************************************************************************
      ***************************************************************************
-    **/
+     **/
 
     /**
      * Initiates a transaction
