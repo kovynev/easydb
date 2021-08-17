@@ -43,7 +43,7 @@ class EasyDB
      *
      * @param ConnectionInterface $pdo
      * @param string $dbEngine
-     * @param array  $options  Extra options
+     * @param array $options Extra options
      */
     public function __construct(ConnectionInterface $pdo, string $dbEngine = '', array $options = [])
     {
@@ -58,7 +58,7 @@ class EasyDB
         );
 
         if (empty($dbEngine)) {
-            $dbEngine = (string) $this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
+            $dbEngine = (string)$this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
         }
 
         $this->dbEngine = $dbEngine;
@@ -68,10 +68,10 @@ class EasyDB
     /**
      * Variadic version of $this->column()
      *
-     * @param  string $statement SQL query without user data
-     * @param  int    $offset    How many columns from the left are we grabbing
+     * @param string $statement SQL query without user data
+     * @param int $offset How many columns from the left are we grabbing
      *                           from each row?
-     * @param  mixed  ...$params Parameters
+     * @param mixed ...$params Parameters
      * @return mixed
      */
     public function col(string $statement, int $offset = 0, ...$params)
@@ -82,9 +82,9 @@ class EasyDB
     /**
      * Fetch a column
      *
-     * @param  string $statement SQL query without user data
-     * @param  array  $params    Parameters
-     * @param  int    $offset    How many columns from the left are we grabbing
+     * @param string $statement SQL query without user data
+     * @param array $params Parameters
+     * @param int $offset How many columns from the left are we grabbing
      *                           from each row?
      * @return mixed
      */
@@ -106,8 +106,8 @@ class EasyDB
     /**
      * Variadic version of $this->single()
      *
-     * @param  string $statement SQL query without user data
-     * @param  mixed  ...$params Parameters
+     * @param string $statement SQL query without user data
+     * @param mixed ...$params Parameters
      * @return mixed
      */
     public function cell(string $statement, ...$params)
@@ -119,8 +119,8 @@ class EasyDB
     /**
      * Delete rows in a database table.
      *
-     * @param          string $table      Table name
-     * @param          mixed  $conditions Defines the WHERE clause
+     * @param string $table Table name
+     * @param mixed $conditions Defines the WHERE clause
      * @return         int
      * @throws         \InvalidArgumentException
      * @psalm-suppress MixedAssignment
@@ -141,8 +141,8 @@ class EasyDB
     /**
      * Delete rows in a database table.
      *
-     * @param          string $table      Table name
-     * @param          array  $conditions Defines the WHERE clause
+     * @param string $table Table name
+     * @param array $conditions Defines the WHERE clause
      * @return         int
      * @throws         \InvalidArgumentException
      * @psalm-suppress MixedAssignment
@@ -190,15 +190,15 @@ class EasyDB
             if ($v === null) {
                 $arr [] = " {$i} IS NULL ";
             } elseif (\is_bool($v)) {
-                $arr []= $this->makeBooleanArgument($i, $v);
+                $arr [] = $this->makeBooleanArgument($i, $v);
             } else {
-                $arr []= " {$i} = ? ";
+                $arr [] = " {$i} = ? ";
                 $params[] = $v;
             }
         }
         $queryString .= \implode(' AND ', $arr);
 
-        return (int) $this->safeQuery(
+        return (int)$this->safeQuery(
             $queryString,
             $params,
             \PDO::FETCH_BOTH,
@@ -210,8 +210,8 @@ class EasyDB
     /**
      * Delete rows in a database table.
      *
-     * @param          string        $table      Table name
-     * @param          EasyStatement $conditions Defines the WHERE clause
+     * @param string $table Table name
+     * @param EasyStatement $conditions Defines the WHERE clause
      * @return         int
      * @throws         \InvalidArgumentException
      * @psalm-suppress MixedAssignment
@@ -245,7 +245,7 @@ class EasyDB
             $params[] = $v;
         }
 
-        return (int) $this->safeQuery(
+        return (int)$this->safeQuery(
             $queryString,
             $params,
             \PDO::FETCH_BOTH,
@@ -258,8 +258,8 @@ class EasyDB
      *
      * @ref https://stackoverflow.com/questions/10573922/what-does-the-sql-standard-say-about-usage-of-backtick
      *
-     * @param  string $string Table or column name
-     * @param  bool   $quote  Certain SQLs escape column names (i.e. mysql with `backticks`)
+     * @param string $string Table or column name
+     * @param bool $quote Certain SQLs escape column names (i.e. mysql with `backticks`)
      * @return string
      */
     public function escapeIdentifier(string $string, bool $quote = true): string
@@ -332,8 +332,8 @@ class EasyDB
      * Input: ([1, 2, 3, 5], int)
      * Output: "(1,2,3,5)"
      *
-     * @param          array  $values
-     * @param          string $type
+     * @param array $values
+     * @param string $type
      * @return         string
      * @throws         \InvalidArgumentException
      * @psalm-suppress MixedAssignment
@@ -363,7 +363,7 @@ class EasyDB
                     if (!\is_int($v)) {
                         throw new \InvalidArgumentException(
                             'Expected a integer at index ' .
-                            (string) $k .
+                            (string)$k .
                             ' of argument 1 passed to ' .
                             static::class .
                             '::' .
@@ -381,7 +381,7 @@ class EasyDB
                     if (!\is_numeric($v)) {
                         throw new \InvalidArgumentException(
                             'Expected a number at index ' .
-                            (string) $k .
+                            (string)$k .
                             ' of argument 1 passed to ' .
                             static::class .
                             '::' .
@@ -390,16 +390,16 @@ class EasyDB
                             $this->getValueType($v)
                         );
                     }
-                    $join[] = (float) $v + 0.0;
+                    $join[] = (float)$v + 0.0;
                     break;
                 case 'string':
                     if (\is_numeric($v)) {
-                        $v = (string) $v;
+                        $v = (string)$v;
                     }
                     if (!\is_string($v)) {
                         throw new \InvalidArgumentException(
                             'Expected a string at index ' .
-                            (string) $k .
+                            (string)$k .
                             ' of argument 1 passed to ' .
                             static::class .
                             '::' .
@@ -428,7 +428,7 @@ class EasyDB
      *
      * WARNING: This function always escapes wildcards using backslash!
      *
-     * @param  string $value
+     * @param string $value
      * @return string
      */
     public function escapeLikeValue(string $value): string
@@ -451,8 +451,8 @@ class EasyDB
     /**
      * Use with SELECT COUNT queries to determine if a record exists.
      *
-     * @param          string $statement
-     * @param          mixed  ...$params
+     * @param string $statement
+     * @param mixed ...$params
      * @return         bool
      * @psalm-suppress MixedAssignment
      */
@@ -467,7 +467,7 @@ class EasyDB
 
     /**
      * @param string $statement
-     * @param mixed  ...$params
+     * @param mixed ...$params
      * @return mixed
      */
     public function first(string $statement, ...$params)
@@ -499,8 +499,8 @@ class EasyDB
     /**
      * Insert a new row to a table in a database.
      *
-     * @param  string $table - table name
-     * @param  array  $map   - associative array of which values should be assigned to each field
+     * @param string $table - table name
+     * @param array $map - associative array of which values should be assigned to each field
      *
      * @psalm-param array<string, scalar|null> $map
      *
@@ -525,8 +525,8 @@ class EasyDB
         /** @var string $queryString */
         /** @var array $values */
 
-        return (int) $this->safeQuery(
-            (string) $queryString,
+        return (int)$this->safeQuery(
+            (string)$queryString,
             $values,
             \PDO::FETCH_BOTH,
             true
@@ -537,7 +537,7 @@ class EasyDB
      * Insert a row into the table, ignoring on key collisions
      *
      * @param string $table - table name
-     * @param array  $map   - associative array of which values should be assigned to each field
+     * @param array $map - associative array of which values should be assigned to each field
      *
      * @psalm-param array<string, scalar|null> $map
      *
@@ -546,7 +546,7 @@ class EasyDB
      * @throws \InvalidArgumentException
      * @throws \TypeError
      */
-    public function insertIgnore(string $table, array $map) : int
+    public function insertIgnore(string $table, array $map): int
     {
         if (!empty($map)) {
             if (!$this->is1DArray($map)) {
@@ -562,8 +562,8 @@ class EasyDB
             false
         );
 
-        return (int) $this->safeQuery(
-            (string) $queryString,
+        return (int)$this->safeQuery(
+            (string)$queryString,
             $values,
             \PDO::FETCH_BOTH,
             true
@@ -574,7 +574,7 @@ class EasyDB
      * Insert a row into the table, ignoring on key collisions
      *
      * @param string $table - table name
-     * @param array  $map   - associative array of which values should be assigned to each field
+     * @param array $map - associative array of which values should be assigned to each field
      * @param array $on_duplicate_key_update
      *
      * @psalm-param array<string, scalar|null> $map
@@ -589,7 +589,8 @@ class EasyDB
         string $table,
         array $map,
         array $on_duplicate_key_update
-    ) : int {
+    ): int
+    {
         if (!empty($map)) {
             if (!$this->is1DArray($map)) {
                 throw new Issues\MustBeOneDimensionalArray(
@@ -604,8 +605,8 @@ class EasyDB
             $on_duplicate_key_update
         );
 
-        return (int) $this->safeQuery(
-            (string) $queryString,
+        return (int)$this->safeQuery(
+            (string)$queryString,
             $values,
             \PDO::FETCH_BOTH,
             true
@@ -615,9 +616,9 @@ class EasyDB
     /**
      * Insert a new record then get a particular field from the new row
      *
-     * @param          string $table
-     * @param          array  $map
-     * @param          string $field
+     * @param string $table
+     * @param array $map
+     * @param string $field
      *
      * @psalm-param array<string, scalar|null> $map
      *
@@ -644,12 +645,12 @@ class EasyDB
             // Escape the identifier to prevent stupidity
             $i = $this->escapeIdentifier($i);
             if ($v === null) {
-                $post []= " {$i} IS NULL ";
+                $post [] = " {$i} IS NULL ";
             } elseif (\is_bool($v)) {
-                $post []= $this->makeBooleanArgument($i, $v);
+                $post [] = $this->makeBooleanArgument($i, $v);
             } else {
                 // We use prepared statements for handling the users' data
-                $post []= " {$i} = ? ";
+                $post [] = " {$i} = ? ";
                 $params[] = $v;
             }
         }
@@ -682,8 +683,8 @@ class EasyDB
     /**
      * Insert many new rows to a table in a database. using the same prepared statement
      *
-     * @param          string $table - table name
-     * @param          array  $maps  - array of associative array specifying values
+     * @param string $table - table name
+     * @param array $maps - array of associative array specifying values
      *                                 should be assigned to each field
      * @return         int
      * @throws         \InvalidArgumentException
@@ -737,9 +738,9 @@ class EasyDB
      *
      * Do not use this with the pgsql driver. It is extremely unreliable.
      *
-     * @param  string $table
-     * @param  array  $map
-     * @param  string $sequenceName (optional)
+     * @param string $table
+     * @param array $map
+     * @param string $sequenceName (optional)
      *
      * @psalm-param array<string, scalar|null> $map
      *
@@ -768,7 +769,7 @@ class EasyDB
      * Get an query string for an INSERT statement.
      *
      * @param string $table
-     * @param array  $columns list of columns that will be inserted
+     * @param array $columns list of columns that will be inserted
      *
      * @return string
      *
@@ -803,7 +804,7 @@ class EasyDB
      * @template T as array<string, scalar|null>
      *
      * @param string $table
-     * @param array  $map
+     * @param array $map
      * @param null|false|array<int, string> $duplicates_mode - null for straight-forward insert,
      *                                                         false for ignore,
      *                                                         array for on-duplicate-key-update
@@ -822,7 +823,8 @@ class EasyDB
         string $table,
         array $map,
         $duplicates_mode = null
-    ): array {
+    ): array
+    {
         /** @var array<int, string> $columns */
         $columns = [];
         /** @var array<int, string> $placeholders */
@@ -893,8 +895,8 @@ class EasyDB
     /**
      * Variadic shorthand for $this->safeQuery()
      *
-     * @param  string $statement SQL query without user data
-     * @param  mixed  ...$params Parameters
+     * @param string $statement SQL query without user data
+     * @param mixed ...$params Parameters
      * @return mixed
      * @throws \TypeError
      */
@@ -903,7 +905,7 @@ class EasyDB
         /**
          * @var array $result
          */
-        $result = (array) $this->safeQuery(
+        $result = (array)$this->safeQuery(
             $statement,
             $params,
             self::DEFAULT_FETCH_STYLE,
@@ -916,8 +918,8 @@ class EasyDB
     /**
      * Similar to $this->q() except it only returns a single row
      *
-     * @param  string $statement SQL query without user data
-     * @param  mixed  ...$params Parameters
+     * @param string $statement SQL query without user data
+     * @param mixed ...$params Parameters
      * @return mixed
      * @throws \TypeError
      */
@@ -926,7 +928,7 @@ class EasyDB
         /**
          * @var array|int $result
          */
-        $result = (array) $this->safeQuery(
+        $result = (array)$this->safeQuery(
             $statement,
             $params,
             self::DEFAULT_FETCH_STYLE,
@@ -942,8 +944,8 @@ class EasyDB
     /**
      * Variadic shorthand for $this->safeQuery()
      *
-     * @param  string $statement SQL query without user data
-     * @param  mixed  ...$params Parameters
+     * @param string $statement SQL query without user data
+     * @param mixed ...$params Parameters
      * @return mixed - If successful, a 2D array
      * @throws \TypeError
      */
@@ -955,13 +957,13 @@ class EasyDB
     /**
      * Perform a Parametrized Query
      *
-     * @param  string $statement         The query string (hopefully untainted
+     * @param string $statement The query string (hopefully untainted
      *                                  by user input)
-     * @param  array  $params            The parameters (used in prepared
+     * @param array $params The parameters (used in prepared
      *                                   statements)
-     * @param  int    $fetchStyle        PDO::FETCH_STYLE
-     * @param  bool   $returnNumAffected Return the number of rows affected?
-     * @param  bool   $calledWithVariadicParams Indicates method is being invoked from variadic $params method
+     * @param int $fetchStyle PDO::FETCH_STYLE
+     * @param bool $returnNumAffected Return the number of rows affected?
+     * @param bool $calledWithVariadicParams Indicates method is being invoked from variadic $params method
      * @return array|int|object
      * @throws \InvalidArgumentException
      * @throws Issues\QueryError
@@ -973,7 +975,8 @@ class EasyDB
         int $fetchStyle = self::DEFAULT_FETCH_STYLE,
         bool $returnNumAffected = false,
         bool $calledWithVariadicParams = false
-    ) {
+    )
+    {
         if ($fetchStyle === self::DEFAULT_FETCH_STYLE) {
             if (isset($this->options[\PDO::ATTR_DEFAULT_FETCH_MODE])) {
                 /**
@@ -989,7 +992,7 @@ class EasyDB
             $stmt = $this->pdo->query($statement);
 
             if ($returnNumAffected) {
-                return (int) $stmt->rowCount();
+                return (int)$stmt->rowCount();
             }
             return $this->getResultsStrictTyped($stmt, $fetchStyle);
         }
@@ -1009,7 +1012,7 @@ class EasyDB
         $stmt = $this->prepare($statement);
         $stmt->execute($params);
         if ($returnNumAffected) {
-            return (int) $stmt->rowCount();
+            return (int)$stmt->rowCount();
         }
         return $this->getResultsStrictTyped($stmt, $fetchStyle);
     }
@@ -1017,8 +1020,8 @@ class EasyDB
     /**
      * Fetch a single result -- useful for SELECT COUNT() queries
      *
-     * @param  string $statement
-     * @param  array  $params
+     * @param string $statement
+     * @param array $params
      * @return mixed
      * @throws \InvalidArgumentException
      * @throws Issues\QueryError
@@ -1038,10 +1041,10 @@ class EasyDB
     /**
      * Update a row in a database table.
      *
-     * @param  string $table      Table name
-     * @param  array  $changes    Associative array of which values should be
+     * @param string $table Table name
+     * @param array $changes Associative array of which values should be
      *                            assigned to each field
-     * @param  mixed  $conditions WHERE clause
+     * @param mixed $conditions WHERE clause
      * @return int
      * @throws \InvalidArgumentException
      * @throws Issues\QueryError
@@ -1067,10 +1070,10 @@ class EasyDB
     /**
      * Update a row in a database table.
      *
-     * @param  string $table      Table name
-     * @param  array  $changes    Associative array of which values should be
+     * @param string $table Table name
+     * @param array $changes Associative array of which values should be
      *                           assigned to each field
-     * @param  array  $conditions WHERE clause
+     * @param array $conditions WHERE clause
      * @return int
      * @throws \InvalidArgumentException
      * @throws Issues\QueryError
@@ -1110,11 +1113,11 @@ class EasyDB
         foreach ($changes as $i => $v) {
             $i = $this->escapeIdentifier($i);
             if ($v === null) {
-                $pre []= " {$i} = NULL";
+                $pre [] = " {$i} = NULL";
             } elseif (\is_bool($v)) {
-                $pre []= $this->makeBooleanArgument($i, $v);
+                $pre [] = $this->makeBooleanArgument($i, $v);
             } else {
-                $pre []= " {$i} = ?";
+                $pre [] = " {$i} = ?";
                 $params[] = $v;
             }
         }
@@ -1130,17 +1133,17 @@ class EasyDB
         foreach ($conditions as $i => $v) {
             $i = $this->escapeIdentifier($i);
             if ($v === null) {
-                $post []= " {$i} IS NULL";
+                $post [] = " {$i} IS NULL";
             } elseif (\is_bool($v)) {
-                $post []= $this->makeBooleanArgument($i, $v);
+                $post [] = $this->makeBooleanArgument($i, $v);
             } else {
-                $post []= " {$i} = ? ";
+                $post [] = " {$i} = ? ";
                 $params[] = $v;
             }
         }
         $queryString .= \implode(' AND ', $post);
 
-        return (int) $this->safeQuery(
+        return (int)$this->safeQuery(
             $queryString,
             $params,
             \PDO::FETCH_BOTH,
@@ -1151,10 +1154,10 @@ class EasyDB
     /**
      * Update a row in a database table.
      *
-     * @param  string        $table      Table name
-     * @param  array         $changes    Associative array of which values
+     * @param string $table Table name
+     * @param array $changes Associative array of which values
      *                                   should be assigned to each field
-     * @param  EasyStatement $conditions WHERE clause
+     * @param EasyStatement $conditions WHERE clause
      * @return int
      * @throws \InvalidArgumentException
      * @throws Issues\QueryError
@@ -1167,7 +1170,8 @@ class EasyDB
         string $table,
         array $changes,
         EasyStatement $conditions
-    ): int {
+    ): int
+    {
         if (empty($changes) || $conditions->count() < 1) {
             return 0;
         }
@@ -1183,11 +1187,11 @@ class EasyDB
         foreach ($changes as $i => $v) {
             $i = $this->escapeIdentifier($i);
             if ($v === null) {
-                $pre []= " {$i} = NULL";
+                $pre [] = " {$i} = NULL";
             } elseif (\is_bool($v)) {
-                $pre []= $this->makeBooleanArgument($i, $v);
+                $pre [] = $this->makeBooleanArgument($i, $v);
             } else {
-                $pre []= " {$i} = ?";
+                $pre [] = " {$i} = ?";
                 $params[] = $v;
             }
         }
@@ -1201,7 +1205,7 @@ class EasyDB
             $params[] = $v;
         }
 
-        return (int) $this->safeQuery(
+        return (int)$this->safeQuery(
             $queryString,
             $params,
             \PDO::FETCH_BOTH,
@@ -1223,7 +1227,7 @@ class EasyDB
     /**
      * Make sure none of this array's elements are arrays
      *
-     * @param  array $params
+     * @param array $params
      * @return bool
      */
     public function is1DArray(array $params): bool
@@ -1285,29 +1289,29 @@ class EasyDB
     /**
      * Get the type of a variable.
      *
-     * @param  mixed $v
+     * @param mixed $v
      * @return string
      */
     protected function getValueType($v = null): string
     {
         if (\is_scalar($v) || \is_array($v)) {
-            return (string) \gettype($v);
+            return (string)\gettype($v);
         }
         if (\is_object($v)) {
             return 'an instance of ' . \get_class($v);
         }
-        return (string) \var_export($v, true);
+        return (string)\var_export($v, true);
     }
 
     /**
      * Helper for PDOStatement::fetchAll() that always returns an array or object.
      *
-     * @param  PDODataFetcher $stmt
-     * @param  int           $fetchStyle
+     * @param PDODataFetcher|\PDOStatement $stmt
+     * @param int $fetchStyle
      * @return array|object
      * @throws \TypeError
      */
-    protected function getResultsStrictTyped(PDODataFetcher $stmt, int $fetchStyle = \PDO::FETCH_ASSOC)
+    protected function getResultsStrictTyped($stmt, int $fetchStyle = \PDO::FETCH_ASSOC)
     {
         /**
          * @var array|object|bool $results
@@ -1323,7 +1327,7 @@ class EasyDB
 
     /**
      * @param string $column
-     * @param bool   $value
+     * @param bool $value
      * @return string
      */
     protected function makeBooleanArgument(string $column, bool $value): string
@@ -1395,7 +1399,7 @@ class EasyDB
     /**
      * Execute an SQL statement and return the number of affected rows
      *
-     * @param  string ...$args
+     * @param string ...$args
      * @return int
      */
     public function exec(...$args): int
@@ -1406,7 +1410,7 @@ class EasyDB
     /**
      * Retrieve a database connection attribute
      *
-     * @param  int ...$args
+     * @param int ...$args
      * @return mixed
      */
     public function getAttribute(...$args)
@@ -1437,7 +1441,7 @@ class EasyDB
     /**
      * Returns the ID of the last inserted row or sequence value
      *
-     * @param  string ...$args
+     * @param string ...$args
      * @return string
      */
     public function lastInsertId(...$args): string
@@ -1448,7 +1452,7 @@ class EasyDB
     /**
      * Prepares a statement for execution and returns a statement object
      *
-     * @param  string ...$args
+     * @param string ...$args
      * @return \PDOStatement
      * @throws Issues\QueryError
      * @psalm-suppress InvalidArgument
@@ -1470,7 +1474,7 @@ class EasyDB
     /**
      * Executes an SQL statement, returning a result set as a PDOStatement object
      *
-     * @param  string ...$args
+     * @param string ...$args
      * @return \PDOStatement
      */
     public function query(...$args)
@@ -1481,7 +1485,7 @@ class EasyDB
     /**
      * Quotes a string for use in a query
      *
-     * @param  string ...$args
+     * @param string ...$args
      * @return string
      * @psalm-suppress InvalidArgument
      */
@@ -1503,8 +1507,8 @@ class EasyDB
     /**
      * Set an attribute
      *
-     * @param  int   $attr
-     * @param  mixed $value
+     * @param int $attr
+     * @param mixed $value
      * @return bool
      * @throws \Exception
      */
