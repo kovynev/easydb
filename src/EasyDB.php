@@ -5,6 +5,7 @@ namespace ParagonIE\EasyDB;
 
 use \ParagonIE\EasyDB\Exception as Issues;
 use Propel\Runtime\Connection\ConnectionInterface;
+use Propel\Runtime\Connection\StatementWrapper;
 use \Throwable;
 
 /**
@@ -1450,7 +1451,7 @@ class EasyDB
      * @throws Issues\QueryError
      * @psalm-suppress InvalidArgument
      */
-    public function prepare(...$args): \PDOStatement
+    public function prepare(...$args)
     {
         $trimmed = trim($args[0]);
         if (empty($trimmed)) {
@@ -1458,7 +1459,10 @@ class EasyDB
                 "Empty query passed to prepare()"
             );
         }
-        return $this->pdo->prepare(...$args);
+        /** @var StatementWrapper $statementWrapper */
+        $statementWrapper = $this->pdo->prepare(...$args);
+
+        return $statementWrapper->getStatement();
     }
 
     /**
@@ -1467,7 +1471,7 @@ class EasyDB
      * @param  string ...$args
      * @return \PDOStatement
      */
-    public function query(...$args): \PDOStatement
+    public function query(...$args)
     {
         return $this->pdo->query(...$args);
     }
