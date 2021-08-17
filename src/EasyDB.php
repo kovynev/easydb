@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ParagonIE\EasyDB;
 
 use \ParagonIE\EasyDB\Exception as Issues;
+use Propel\Runtime\Connection\ConnectionInterface;
 use \Throwable;
 
 /**
@@ -21,7 +22,7 @@ class EasyDB
     protected $dbEngine = '';
 
     /**
-     * @var \PDO
+     * @var ConnectionInterface
      */
     protected $pdo;
 
@@ -38,11 +39,11 @@ class EasyDB
     /**
      * Dependency-Injectable constructor
      *
-     * @param \PDO   $pdo
+     * @param ConnectionInterface $pdo
      * @param string $dbEngine
      * @param array  $options  Extra options
      */
-    public function __construct(\PDO $pdo, string $dbEngine = '', array $options = [])
+    public function __construct(ConnectionInterface $pdo, string $dbEngine = '', array $options = [])
     {
         $this->pdo = $pdo;
         $this->pdo->setAttribute(
@@ -486,9 +487,9 @@ class EasyDB
      * Return a copy of the PDO object (to prevent it from being modified
      * to disable safety/security features).
      *
-     * @return \PDO
+     * @return ConnectionInterface
      */
-    public function getPdo(): \PDO
+    public function getPdo(): ConnectionInterface
     {
         return $this->pdo;
     }

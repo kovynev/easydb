@@ -4,7 +4,8 @@ declare (strict_types=1);
 namespace ParagonIE\EasyDB\Tests;
 
 use ParagonIE\EasyDB\EasyDB;
-use PDO;
+use Propel\Runtime\Connection\ConnectionInterface;
+use Propel\Runtime\Connection\PdoConnection;
 
 class EscapeLikeTest extends EasyDBTest
 {
@@ -54,9 +55,9 @@ class EscapeLikeTest extends EasyDBTest
         $this->assertSame($expected, $output);
     }
 
-    private function getMockPDO(): PDO
+    private function getMockPDO(): ConnectionInterface
     {
-        $mock = $this->getMockBuilder(PDO::class)
+        $mock = $this->getMockBuilder(PdoConnection::class)
             ->disableOriginalConstructor()
             ->getMock();
 

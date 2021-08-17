@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ParagonIE\EasyDB;
 
 use \ParagonIE\EasyDB\Exception as Issues;
+use Propel\Runtime\Connection\PdoConnection;
 
 /**
  * Class Factory
@@ -81,7 +82,7 @@ abstract class Factory
         }
 
         try {
-            $pdo = new \PDO($dsn, $username, $password, $options);
+            $pdo = new PdoConnection($dsn, $username, $password, $options);
         } catch (\PDOException $e) {
             if (\strpos((string) $e->getMessage(), 'could not find driver') !== false) {
                 throw (new Issues\ConstructorFailed(
