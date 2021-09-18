@@ -718,18 +718,24 @@ class EasyDB
             }
         }
 
-        $queryString = $this->buildInsertQuery($table, \array_keys($first));
+        /**
+         * @var array $params
+         * @var array $allParams
+         */
+        $allParams = [];
+        foreach ($maps as $params) {
+            $allParams = array_merge($allParams, \array_values($params));
+        }
+
+        $queryString = $this->buildMultipleInsertQuery($table, $maps);
 
         // Now let's run a query with the parameters
         $stmt = $this->prepare($queryString);
         $count = 0;
-        /**
-         * @var array $params
-         */
-        foreach ($maps as $params) {
-            $stmt->execute(\array_values($params));
-            $count += $stmt->rowCount();
-        }
+
+        $stmt->execute($allParams);
+        $count += $stmt->rowCount();
+
         return $count;
     }
 
@@ -795,6 +801,41 @@ class EasyDB
             $this->escapeIdentifier($table),
             \implode(', ', $columns),
             \implode(', ', $placeholders)
+        );
+    }
+
+    /**
+     * Get an query string for an INSERT statement.
+     *
+     * @param string $table
+     * @param array $columns list of columns that will be inserted
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     *   If $columns is not a one-dimensional array.
+     * @psalm-suppress MixedArgument
+     */
+    public function buildMultipleInsertQuery(string $table, array $maps): string
+    {
+        $columns = \array_keys($maps[0]);
+        $columns = \array_map([$this, 'escapeIdentifier'], $columns);
+
+        $values = '';
+        $comma = null;
+        foreach ($maps as $map) {
+            $rowPlaceholders = \array_fill(0, \count($map), '?');
+            $values .= $comma . '('.join(', ', $rowPlaceholders).')';
+            if (!$comma) {
+                $comma = ', ';
+            }
+        }
+
+        return \sprintf(
+            'INSERT INTO %s (%s) VALUES %s',
+            $this->escapeIdentifier($table),
+            \join(', ', $columns),
+            $values
         );
     }
 
