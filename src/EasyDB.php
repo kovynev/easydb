@@ -724,7 +724,9 @@ class EasyDB
          */
         $allParams = [];
         foreach ($maps as $params) {
-            $allParams = array_merge($allParams, \array_values($params));
+            foreach ($params as $param) {
+                $allParams[] = $param;
+            }
         }
 
         $queryString = $this->buildMultipleInsertQuery($table, $maps);
@@ -822,15 +824,21 @@ class EasyDB
         $columns = \array_map([$this, 'escapeIdentifier'], $columns);
 
         $values = '';
-        $comma = null;
+        $comma = '';
         foreach ($maps as $map) {
-            $rowPlaceholders = \array_fill(0, \count($map), '?');
-            $values .= $comma . '('.join(', ', $rowPlaceholders).')';
+            $values .= $comma . '(';
+            $innerComma = '';
+            foreach ($map as $mapValue) {
+                $values .= $innerComma.'?';
+                if (!$innerComma) {
+                    $innerComma = ',';
+                }
+            }
+            $values .= ')';
             if (!$comma) {
                 $comma = ', ';
             }
         }
-
         return \sprintf(
             'INSERT INTO %s (%s) VALUES %s',
             $this->escapeIdentifier($table),
